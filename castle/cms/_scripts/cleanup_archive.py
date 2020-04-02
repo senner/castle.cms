@@ -22,7 +22,7 @@ import transaction
 
 parser = argparse.ArgumentParser(
     description='...')
-parser.add_argument('--site-id', dest='site_id', default='Plone')
+parser.add_argument('--site-id', dest='site_id', default='Castle')
 args, _ = parser.parse_known_args()
 
 

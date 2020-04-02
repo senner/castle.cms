@@ -28,7 +28,7 @@ url_regex = re.compile(
 parser = argparse.ArgumentParser(
     description='...')
 parser.add_argument('--file', dest='file', default=False)
-parser.add_argument('--site-id', dest='site_id', default='Plone')
+parser.add_argument('--site-id', dest='site_id', default='Castle')
 parser.add_argument('--limit', dest='limit', default=20, type=int)
 args, _ = parser.parse_known_args()
 

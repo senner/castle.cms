@@ -111,7 +111,7 @@ parser = argparse.ArgumentParser(
     description='...')
 parser.add_argument('--overwrite', dest='overwrite', default=False)
 parser.add_argument('--admin-user', dest='admin_user', default='admin')
-parser.add_argument('--site-id', dest='site_id', default='Plone')
+parser.add_argument('--site-id', dest='site_id', default='Castle')
 parser.add_argument('--dir', dest='dir', default='./export')
 parser.add_argument('--interval', dest='interval', default=0)
 parser.add_argument('--modifiedsince', dest='modifiedsince')

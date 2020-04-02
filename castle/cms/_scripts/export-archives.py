@@ -13,7 +13,7 @@ from zope.component.hooks import setSite
 
 parser = argparse.ArgumentParser(
     description='...')
-parser.add_argument('--site-id', dest='site_id', default='Plone')
+parser.add_argument('--site-id', dest='site_id', default='Castle')
 parser.add_argument('--type', dest='type', default='Page')
 
 args, _ = parser.parse_known_args()

@@ -9,7 +9,7 @@ import transaction
 parser = argparse.ArgumentParser(
     description='...')
 parser.add_argument('--file', dest='file', default=False)
-parser.add_argument('--site-id', dest='site_id', default='Plone')
+parser.add_argument('--site-id', dest='site_id', default='Castle')
 parser.add_argument('--site-url', dest='site_url', default='')
 args, _ = parser.parse_known_args()
 
