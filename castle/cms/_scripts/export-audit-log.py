@@ -92,7 +92,7 @@ def export_audit_log(site, args):
 
         end_time = datetime.now()
         tdelta = end_time - start_time
-        print('\nFound {} logs in {}'.format(len(log_entries), str(tdelta)))
+        print('\nFound {} log entries in {}'.format(len(log_entries), str(tdelta)))
 
         audit_log = {
             'export_timestamp': str(start_time),
