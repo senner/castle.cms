@@ -1,6 +1,5 @@
 from castle.cms import audit
 from castle.cms.utils import ESConnectionFactoryFactory
-from elasticsearch.helpers import scan
 from cStringIO import StringIO
 from plone import api
 from plone.app.uuid.utils import uuidToObject
@@ -9,10 +8,7 @@ from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from zope.component import getUtility
 
-from datetime import datetime
-
 import csv
-import json
 
 
 class AuditView(BrowserView):
@@ -150,40 +146,6 @@ class AuditView(BrowserView):
         resp = self.request.response
         resp.setHeader('Content-Disposition', 'attachment; filename=export.csv')
         resp.setHeader('Content-Type', 'text/csv')
-        output.seek(0)
-        return output.read()
-
-    def export_all(self):
-        log_entries = []
-        index_name = audit.get_index_name()
-        es = ESConnectionFactoryFactory()()
-        query = self.get_query()
-        scroll_duration = '1m'
-        export_timestamp = datetime.now()
-        export_date = export_timestamp.strftime("%Y-%m-%d")
-
-        results = scan(
-            es,
-            index=index_name,
-            doc_type=audit.es_doc_type,
-            query=query,
-            size=3000,
-            scroll=scroll_duration)
-
-        for result in results:
-            log_entries.append(result['_source'])
-
-        audit_log = {
-            'export_timestamp': str(export_timestamp),
-            'audit_log': log_entries
-        }
-        output = StringIO()
-        json.dump(audit_log, output)
-
-        resp = self.request.response
-        resp.setHeader('Content-Disposition', 'attachment; filename=audit_log_{}.json'.format(export_date))
-        resp.setHeader('Content-Type', 'application/json')
-
         output.seek(0)
         return output.read()
 
