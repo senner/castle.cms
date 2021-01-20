@@ -208,6 +208,8 @@ class Authenticator(object):
             manager = LockoutManager(self.context, username)
 
             if manager.maxed_number_of_attempts():
+                blacklisted_ips.append(ip)
+                registry['castle.blacklisted_ips'] = blacklisted_ips
                 raise AuthenticationMaxedLoginAttempts()
 
             manager.add_attempt()
