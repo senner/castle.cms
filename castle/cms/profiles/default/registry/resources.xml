@@ -189,6 +189,15 @@
     <value key="deps">plone-logged-in</value>
   </records>
 
+  <!-- castle-components-continuous-content -->
+  <records prefix="plone.resources/castle-components-continuous-content"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++castle/components/continuous-content.js</value>
+      <!-- <value key="css">
+        <element>++plone++castle/less/misc/continuous-content.css</element>
+      </value> -->
+      <value key="deps">plone-logged-in</value>
+  </records>
 
   <!-- need to override tinymce pattern... -->
   <records prefix="plone.resources/mockup-patterns-tinymce"

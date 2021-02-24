@@ -23,7 +23,10 @@ from plone.locking.interfaces import ILockable
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone import PloneMessageFactory as _
 from Products.CMFPlone.log import logger
+from Products.CMFPlone.resources import add_resource_on_request
+from Products.CMFCore.interfaces._content import IFolderish
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from Products.Five import BrowserView
 from uuid import uuid4
 from ZODB.POSException import ConflictError
 from zope.component import getMultiAdapter
@@ -31,6 +34,7 @@ from zope.container.interfaces import INameChooser
 from zope.event import notify
 from zope.interface import implementer
 from zope.lifecycleevent import ObjectModifiedEvent
+
 
 import json
 import transaction
@@ -365,3 +369,37 @@ class FolderContentsView(BaseFolderContentsView):
                 'last_modified_by': 'Last modified by'
             })
         return columns
+
+
+class ContinuousContentsView(BrowserView):
+
+    batch_size = 150
+
+    def __call__(self):
+        if self.request.get('b_start'):
+            return self.get_batch()
+        else:
+            self.request['b_start'] = 0
+        add_resource_on_request(self.request, 'castle-components-continous-content')
+        return super(ContinuousContentsView, self).__call__()
+
+    def get_data(self):
+        data = {
+            'firstBatch': self.get_batch(),
+            'batchSize': self.batch_size,
+            'batch': 0
+        }
+        return data
+
+    def get_batch(self):
+        
+        #  b_start handled internally by getting from request object.
+        if IFolderish.providedBy(self.context):
+            batch = self.context.getFolderContents(batch=True, b_size=self.batch_size)
+            brains = [brain for brain in batch]
+            data = [{
+                'url': brain.getURL() 
+            } for brain in brains]
+            return json.dumps(data)
+        else:
+            return "not a folder"  # shouldn't happen, view provided for IFolderish only

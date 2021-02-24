@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<registry xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+          i18n:domain="plone">
+
+
+  <!-- castle-components-continuous-content -->
+  <records prefix="plone.resources/castle-components-continuous-content"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++castle/components/continuous-content.js</value>
+      <!-- <value key="css">
+        <element>++plone++castle/less/misc/continuous-content.css</element>
+      </value> -->
+      <value key="deps">plone-logged-in</value>
+  </records>
+
+
+</registry>
