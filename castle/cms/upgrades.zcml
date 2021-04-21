@@ -464,4 +464,13 @@
     handler=".upgrades.upgrade_2_6_31"
     profile="castle.cms:default"
     />
+
+    <genericsetup:upgradeStep
+    title="Upgrade CastleCMS to 2.6.32"
+    description=""
+    source="*"
+    destination="2632"
+    handler=".upgrades.upgrade_2_6_32"
+    profile="castle.cms:default"
+    />
 </configure>
