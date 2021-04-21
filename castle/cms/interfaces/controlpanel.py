@@ -7,6 +7,7 @@ from Products.CMFPlone.utils import validate_json
 from zope import schema
 from zope.interface import Interface
 from zope.schema.vocabulary import SimpleVocabulary
+from plone.app.users.schema import checkEmailAddress
 
 
 def create_term(val, label):
@@ -290,6 +291,15 @@ class ISiteConfiguration(Interface):
         default=False
     )
 
+    daily_audit_log_recipients = schema.List(
+        title=u'Audit Log Recipients',
+        description=u'Add Email addresses. Press enter to add another email.',
+        default=[],
+        missing_value=[],
+        required=False,
+        value_type=schema.ASCIILine(
+            constraint=checkEmailAddress
+        ))
 
 class IAPISettings(Interface):
     princexml_server_url = schema.TextLine(

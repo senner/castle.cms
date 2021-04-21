@@ -122,6 +122,7 @@ setup(
       archive-content = castle.cms.cron:archive_content
       content-popularity = castle.cms.cron:ga_popularity
       empty-trash = castle.cms.cron:empty_trash
+      email-audit = castle.cms.cron:email_audit
       twitter-monitor = castle.cms.cron:twitter_monitor
       reindex-elasticsearch = castle.cms.cron:reindex_es
       send-forced-publish-alert = castle.cms.cron:forced_publish_alert
