@@ -12,14 +12,6 @@
  <property name="filter_content_types">True</property>
  <property name="allow_discussion">False</property>
  <property name="default_view">layout_view</property>
- <property name="allowed_content_types">
-  <element value="Audio"/>
-  <element value="File"/>
-  <element value="Image"/>
-  <element value="Video"/>
-  <element value="Collection"/>
-  <element value="Dashboard"/>
- </property>
  <property name="view_methods">
   <element value="view-slideshow"/>
   <element value="layout_view"/>

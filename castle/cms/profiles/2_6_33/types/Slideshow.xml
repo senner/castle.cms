@@ -2,14 +2,7 @@
 <object name="Slideshow" meta_type="Dexterity FTI" i18n:domain="plone"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
-
- <property name="allowed_content_types" purge="false">
-  <element value="Audio"/>
-  <element value="File"/>
-  <element value="Image"/>
-  <element value="Video"/>
-  <element value="Collection"/>
-  <element value="Dashboard"/>
- </property>
-
+<property name="behaviors" purge="false">
+ <element value="Products.CMFPlone.interfaces.constrains.ISelectableConstrainTypes" remove="true"/>
+</property>
 </object>
