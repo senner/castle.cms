@@ -469,7 +469,7 @@
     name="2_6_32"
     title="CastleCMS upgrade to 2.6.32 profile"
     directory="profiles/2_6_32"
-    description=""
+    description="Add's script for emailing the audit log."
     provides="Products.GenericSetup.interfaces.EXTENSION"
     />
 

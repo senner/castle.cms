@@ -299,7 +299,9 @@ class ISiteConfiguration(Interface):
         required=False,
         value_type=schema.ASCIILine(
             constraint=checkEmailAddress
-        ))
+        )
+    )
+
 
 class IAPISettings(Interface):
     princexml_server_url = schema.TextLine(
