@@ -475,7 +475,7 @@
 
   <genericsetup:upgradeStep
     title="Upgrade CastleCMS to 2.6.33"
-    description="adds to the slideshow.xml file"
+    description="makes modifications to the Slideshow.xml file"
     source="*"
     destination="2633"
     handler=".upgrades.upgrade_2_6_33"
