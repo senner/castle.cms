@@ -20,7 +20,7 @@ query = {
 
 
 def run_query():
-    registry = getToolByName(app['Castle'], 'portal_registry') # noqa: F821
+    registry = getToolByName(app['Castle'], 'portal_registry')  # noqa: F821
     index_name = audit.get_index_name()
     es = ESConnectionFactoryFactory(registry)()
 
@@ -47,7 +47,7 @@ def generate_message(log):
     return html
 
 
-def run(app):   # noqa: F821
+def run(app):
     singleton.SingleInstance('emailaudit')
 
     user = app.acl_users.getUser('admin')
@@ -68,4 +68,4 @@ def run(app):   # noqa: F821
 
 
 if __name__ == '__main__':
-    run(app)
+    run(app)  # noqa: F821
