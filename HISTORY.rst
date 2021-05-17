@@ -1,10 +1,11 @@
 Changelog
 =========
 
-2.6.32 (unreleased)
+2.6.34 (2021-05-17)
 -------------------
 
-- Nothing changed yet.
+- added try-catch to patterns to catch unfound tiles.
+- created test_missing_tiles_not_available_in_settings() in test_settings.py
 
 
 2.6.31 (2021-04-20)
