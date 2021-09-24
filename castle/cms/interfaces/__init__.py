@@ -23,6 +23,7 @@ from .controlpanel import IBusinessData
 from .controlpanel import ICastleSettings
 from .controlpanel import IContentSettings
 from .controlpanel import ICrawlerConfiguration
+from .controlpanel import IImportExportConfiguration
 from .controlpanel import ISecuritySchema
 from .controlpanel import ISiteConfiguration
 from .controlpanel import ISiteSchema

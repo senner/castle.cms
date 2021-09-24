@@ -138,7 +138,6 @@
     layer="castle.cms.interfaces.ICastleLayer"
     />
 
-
   <browser:page
     name="search-exclusion-controlpanel"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
@@ -172,6 +171,14 @@
     permission="plone.app.controlpanel.Site"
     layer="castle.cms.interfaces.ICastleLayer"
     template="templates/links.pt"
+    />
+
+  <browser:page
+    name="importexport-controlpanel"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    class=".importexport.ImportExportControlPanel"
+    permission="plone.app.controlpanel.Site"
+    layer="castle.cms.interfaces.ICastleLayer"
     />
 
   <!-- overridding so we can customize styles, remove buttons -->

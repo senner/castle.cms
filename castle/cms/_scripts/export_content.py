@@ -37,7 +37,9 @@ from zope.component.hooks import setSite
 from zope.interface import Interface
 from zope.schema import getFieldsInOrder
 from ZPublisher.HTTPRequest import record
-
+from zope.globalrequest import getRequest
+from zope.component.hooks import getSite
+from plone import api
 
 logger = logging.getLogger(__name__)
 
@@ -132,18 +134,8 @@ def spoof_request(app):
     _oldpolicy = setSecurityPolicy(_policy)  # noqa
     newSecurityManager(None, OmnipotentUser().__of__(app.acl_users))
     return makerequest(app)
+  
 
-app = spoof_request(app)  # noqa
-
-user = app.acl_users.getUser(args.admin_user)  # noqa
-try:
-    newSecurityManager(None, user.__of__(app.acl_users))  # noqa
-except Exception:
-    logger.error('Unknown admin user; '
-                 'specify an existing Zope admin user with --admin-user (default is admin)')  # noqa
-    exit(-1)
-site = app[args.site_id]
-setSite(site)
 
 _filedata_marker = 'filedata://'
 _deferred_marker = 'deferred://'
@@ -153,11 +145,7 @@ _uid_separator = '||||'
 _date_re = re.compile('^[0-9]{4}\-[0-9]{2}\-[0-9]{2}.*$')
 
 
-export_folder = os.path.abspath(args.dir)
-catalog = site.portal_catalog
-workflow = site.portal_workflow
-ptool = site.plone_utils
-site_path = '/'.join(site.getPhysicalPath())
+
 
 
 class BaseTypeSerializer(object):
@@ -486,9 +474,9 @@ def get_uid(obj):
     return value
 
 
-def create_path(path):
-    path = path[len(site_path):]
-    xpath = os.path.join(export_folder, path.lstrip('/'))
+def create_path(path, sitepath, exportfolder):
+    path = path[len(sitepath):]
+    xpath = os.path.join(exportfolder, path.lstrip('/'))
     xpathsplit = xpath.split('/')
     xfolderpath = '/'.join(xpathsplit[:-1])
     mkdir_p(xfolderpath)
@@ -554,8 +542,13 @@ class ContentExporter(object):
                 ob=self.obj, name='review_history')
         except Exception:
             review_history = []
+
+        #import pdb; pdb.set_trace()
         for h in review_history:
-            h['time'] = h['time'].HTML4()
+            try:
+                h['time'] = h['time'].HTML4()
+            except:
+                continue
 
         return {
             'portal_type': self.obj.portal_type,
@@ -658,6 +651,7 @@ class DexterityExporter(ContentExporter):
             data['tile_data'] = tdata
 
             req = site.REQUEST
+
             layout = getLayout(self.obj)
             dom = getHTMLSerializer(layout)
 
@@ -725,7 +719,7 @@ def export_obj(obj):
         yield result
 
 
-def write_export(obj, data):
+def write_export(obj, data, sitepath, exportfolder):
     objpath = '/'.join(obj.getPhysicalPath())
     if IFolder.providedBy(obj):
         objpath = os.path.join(objpath, '__folder__')
@@ -735,9 +729,10 @@ def write_export(obj, data):
             if not os.path.exists(
                     os.path.join('/'.join(fobj.getPhysicalPath()), '__folder__')):  # noqa
                 for eobj, edata in export_obj(fobj):
-                    write_export(eobj, edata)
+                    write_export(eobj, edata, sitepath, exportfolder)
             fobj = aq_parent(fobj)
-    path = create_path(objpath)
+    #import pdb; pdb.set_trace()
+    path = create_path(objpath, sitepath, exportfolder)
     try:
         fi = open(path, 'w')
         fi.write(dumps(data))
@@ -746,17 +741,34 @@ def write_export(obj, data):
         print('Error exporting {}'.format(objpath))
 
 
-def run_export(brains):
+def run_export(brains, interval=0, pathfilter=None, exportfolder=None):
+    if not 'site' in locals() or not 'site' in globals():
+        global site
+        site = getSite()
+        global workflow
+        workflow = site.portal_workflow
+        global ptool
+        ptool = site.plone_utils
+        global site_path
+        site_path = '/'.join(site.getPhysicalPath())
+        global catalog
+        catalog = site.portal_catalog
+    if not interval:
+        if args:
+            interval = int(args.interval)
     size = len(brains)
+    if not pathfilter: 
+        if args:
+            pathfilter = args.path_filter
     for idx, brain in enumerate(brains):
         try:
-            interval = int(args.interval)
             time.sleep(interval)
         except Exception:
             pass
         path = brain.getPath()
-        if (args.path_filter and
-                not fnmatch(path, args.path_filter)):
+
+        if (pathfilter and
+                not fnmatch(path, pathfilter)):
             print('skipping(filtered), ', path,
                   ' ', str(idx + 1) + '/' + str(size))
             continue
@@ -767,30 +779,54 @@ def run_export(brains):
             print('skipping - error getting object, ', path, ' ',
                   str(idx + 1) + '/' + str(size))
             continue
-        for obj, data in export_obj(obj):
-            write_export(obj, data)
+        
+        #import pdb; pdb.set_trace()
+        if(site_path and exportfolder):
+            for obj, data in export_obj(obj):
+                write_export(obj, data, site_path, exportfolder)
 
 
-if args.createdsince:
-    print('exporting items created since %s' % args.createdsince)
-    date_range = {
-        'query': (
-            DateTime(args.createdsince),
-            DateTime('2062-05-08 23:59:59'),
-        ),
-        'range': 'min:max'
-    }
-    query = catalog(created=date_range)
-elif args.modifiedsince:
-    print('exporting items modified since %s' % args.modifiedsince)
-    date_range = {
-        'query': (
-            DateTime(args.modifiedsince),
-            DateTime('2062-05-08 23:59:59'),
-        ),
-        'range': 'min:max'
-    }
-    query = catalog(modified=date_range)
-else:
-    query = catalog()
-run_export(query)
+if __name__ == '__main__':
+    #import pdb; pdb.set_trace()
+    app = spoof_request(app)  # noqa
+
+    user = app.acl_users.getUser(args.admin_user)  # noqa
+    try:
+        newSecurityManager(None, user.__of__(app.acl_users))  # noqa
+    except Exception:
+        logger.error('Unknown admin user; '
+                    'specify an existing Zope admin user with --admin-user (default is admin)')  # noqa
+        exit(-1)
+    # global site
+    site = app[args.site_id]
+    setSite(site)
+    catalog = site.portal_catalog
+    export_folder = os.path.abspath(args.dir)
+    site_path = '/'.join(site.getPhysicalPath())
+    workflow = site.portal_workflow
+    ptool = site.plone_utils
+
+    if args.createdsince:
+        print('exporting items created since %s' % args.createdsince)
+        date_range = {
+            'query': (
+                DateTime(args.createdsince),
+                DateTime('2062-05-08 23:59:59'),
+            ),
+            'range': 'min:max'
+        }
+        query = catalog(created=date_range)
+    elif args.modifiedsince:
+        print('exporting items modified since %s' % args.modifiedsince)
+        date_range = {
+            'query': (
+                DateTime(args.modifiedsince),
+                DateTime('2062-05-08 23:59:59'),
+            ),
+            'range': 'min:max'
+        }
+        query = catalog(modified=date_range)
+    else:
+        query = catalog()
+    run_export(query, sitepath=site_path, exportfolder=export_folder)
+

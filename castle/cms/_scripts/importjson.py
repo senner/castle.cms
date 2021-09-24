@@ -94,17 +94,6 @@ if args.skip_types:
 else:
     skip_types = False
 
-user = app.acl_users.getUser(args.admin_user)  # noqa
-try:
-    newSecurityManager(None, user.__of__(app.acl_users))  # noqa
-except Exception:
-    logger.error('Unknown admin user; '
-                 'specify an existing Zope admin user with --admin-user '
-                 '(default is admin)')
-    exit(-1)
-site = app[args.site_id]  # noqa
-setSite(site)
-
 
 def traverse(path):
     folder = site  # noqa
@@ -396,6 +385,16 @@ class CastleImporter(object):
 
 
 if __name__ == '__main__':
+    user = app.acl_users.getUser(args.admin_user)  # noqa
+    try:
+        newSecurityManager(None, user.__of__(app.acl_users))  # noqa
+    except Exception:
+        logger.error('Unknown admin user; '
+                    'specify an existing Zope admin user with --admin-user '
+                    '(default is admin)')
+        exit(-1)
+    site = app[args.site_id]  # noqa
+    setSite(site)
 
     print('------------------------------')
     print('Start importing')

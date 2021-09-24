@@ -1,0 +1,10 @@
+<object name="portal_controlpanel" meta_type="Plone Control Panel Tool"
+  i18n:domain="plone" xmlns:i18n="http://xml.zope.org/namespaces/i18n" purge="False">
+   <configlet title="ImportExport" action_id="ImportExportControlPanel"
+                         appId="ImportExportControlPanel"
+    category="plone-advanced" condition_expr=""
+    url_expr="string:${portal_url}/@@importexport-controlpanel"
+    visible="True" i18n:attributes="title">
+  <permission>Manage portal</permission>
+ </configlet>
+</object>

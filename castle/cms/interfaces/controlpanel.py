@@ -7,6 +7,7 @@ from Products.CMFPlone.utils import validate_json
 from zope import schema
 from zope.interface import Interface
 from zope.schema.vocabulary import SimpleVocabulary
+from plone.namedfile.field import NamedFile
 
 
 def create_term(val, label):
@@ -690,6 +691,36 @@ class ICrawlerConfiguration(Interface):
     crawler_interval = schema.Int(
         title=u'Request Interval',
         description=u'To avoid overburdening the crawled site, enter a request interval in seconds',
+        required=False,
+        default=0,
+    )
+
+class IImportExportConfiguration(Interface):
+    # import_file = NamedFile(
+    #     title=u'Import File',
+    #     description=u'Content to be imported',
+    # )
+    
+    export_folder = schema.TextLine(
+        title=u'Export To',
+        description=u'Where the content should be exported to.',
+        required=False,
+    )
+
+    created_since = schema.Datetime(
+        title=u'Items created since:',
+        required=False,
+    )
+
+    import_path = schema.TextLine(
+        title=u'Import From',
+        description=u'What content you would like to import.',
+        required=False,
+    )
+
+    interval = schema.Int(
+        title=u'Request Interval',
+        description=u'To avoid overburdening the site, enter a request interval in seconds',
         required=False,
         default=0,
     )

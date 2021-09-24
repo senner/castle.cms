@@ -125,4 +125,12 @@
     i18n:attributes="title">
   <permission>Plone Site Setup: Users and Groups</permission>
  </configlet>
+  
+ <configlet title="ImportExport" action_id="ImportExportControlPanel"
+                         appId="ImportExportControlPanel"
+    category="plone-advanced" condition_expr=""
+    url_expr="string:${portal_url}/@@importexport-controlpanel"
+    visible="True" i18n:attributes="title">
+  <permission>Manage portal</permission>
+ </configlet>
 </object>
